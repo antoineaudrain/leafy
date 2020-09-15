@@ -1,4 +1,4 @@
-# leafy
+# 🍃 leafy
 
 Creates a JavaScript object representing a directory tree.
 
