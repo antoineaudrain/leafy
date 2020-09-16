@@ -121,32 +121,39 @@ const chalk = (text, options) => {
   return color + special + background + text + fontSpecial.RESET
 }
 
-const drawLine = (index, nodes, node, depth) => console.log(
-  chalk(characters.IN_DIRECTORY.repeat(depth)),
-  chalk(index === nodes.length - 1 && node.type !== types.DIRECTORY ? characters.LAST_ELEMENT : characters.ELEMENT),
-  chalk(node.name),
-  (node.type === types.FILE && !node?.hidden) ? chalk(node.hash, { color: fontColors.BLUE }) : ''
-)
+const drawAsciiTree = (nodes, depth = 0, fillers = [], colors = undefined) => nodes.map((node, index) => {
+  const isLastNode = index === nodes.length - 1
+  const isDirWithNodes = node.type === types.DIRECTORY && !!node?.children.length
 
-const drawAsciiTree = (nodes, depth = 0) => {
-  nodes.map((node, index) => {
-    drawLine(index, nodes, node, depth)
+  console.log(
+    chalk(fillers.join('')),
+    chalk(isLastNode ? characters.LAST_ELEMENT : characters.ELEMENT, { color: colors?.structure ? fontColors[colors?.structure] : '' }),
+    chalk(node.name, { color: colors?.name ? fontColors[colors?.name] : '' }),
+    (node.type === types.FILE && !node?.hidden) ? chalk(node.hash, { color: colors?.hash ? fontColors[colors?.hash] : '' }) : ''
+  )
 
-    if (node.type === types.DIRECTORY) {
-      if (!!node?.children.length) {
-        drawAsciiTree(node.children, depth + 1)
-      }
-    }
-  })
-}
+  if (isDirWithNodes) {
 
-const leafy = (path, options) => {
-  const nodes = directoryTree(path, options)
-  if (options?.gui) {
-    console.log(nodes.name)
-    drawAsciiTree(nodes.children)
+    drawAsciiTree(
+      node.children,
+      depth + 1,
+      [
+        ...fillers,
+        chalk(
+        isLastNode ? characters.EMPTY : characters.IN_DIRECTORY,
+        { color: colors?.structure ? fontColors[colors?.structure] : '' }
+        )
+      ],
+      colors
+    )
   }
-  // console.log(nodes)
+})
+
+export default (path, options) => {
+  const nodes = directoryTree(path, options)
+  if (options?.gui || true) {
+    console.log(nodes.name)
+    drawAsciiTree(nodes.children, 0, [], options?.colors)
+  }
 }
 
-leafy('../../../Documents/Workspace/cooky/cooky-server', { exclude: ['node_modules', '.git', '.idea'], hash: true, gui: true })

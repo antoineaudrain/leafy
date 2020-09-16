@@ -4,13 +4,24 @@ Creates a JavaScript object representing a directory tree.
 
 ## Options
 
-`exclude` : `string|string[]` - A string or an array of string to test for exclusion of elements.
+`exclude` : `String|String[]` - A string or an array of string to test for exclusion of elements.
 
 `normalizePath` : `Boolean` - If true, windows style paths will be normalized to unix style paths (/ instead of \\).
 
 `hash` : `Boolean` - If true, add a Hashid (only on files).
 
 `gui` : `Boolean` - If true, display the directory tree in your console.
+
+`colors` : `Object` - ONLY WITH GUI ACTIVATED - Set the color for the `structure`, `name` and `hash` element. Accept only the next values:
+
+* `BLACK` : `String`
+* `RED` : `String`
+* `GREEN` : `String`
+* `YELLOW` : `String`
+* `BLUE` : `String`
+* `MAGENTA` : `String`
+* `CYAN` : `String`
+* `WHITE` : `String`
 
 ## Result
 
